@@ -28,6 +28,6 @@ resource "aws_lambda_function" "my_lambda" {
   role        = aws_iam_role.lambda_execution_role.arn
   filename     = "${path.module}/stage-tag-script-peer.zip"  
 
-  timeout      = 10
+  timeout      = 100
   memory_size = 128
 }
