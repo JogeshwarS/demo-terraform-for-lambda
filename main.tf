@@ -26,7 +26,7 @@ resource "aws_lambda_function" "my_lambda" {
   handler      = "index.handler"
   runtime      = "python3.11"
   role        = aws_iam_role.lambda_execution_role.arn
-  filename     = "/home/xubham/Desktop/terraform/stage-tag-script-peer.zip"  
+  filename     = "${path.module}/stage-tag-script-peer.zip"  
 
   timeout      = 10
   memory_size = 128
