@@ -32,8 +32,9 @@ resource "aws_lambda_function" "my_lambda" {
   handler      = "index.handler"
   runtime      = "python3.11"
   role        = aws_iam_role.lambda_execution_role.arn
-  filename     = "${path.module}/stage-tag-script-peer.zip"  
+  filename     = "lambda_function_payload.zip"  
+  source_code_hash = data.archive_file.lambda.output_base64sha256
 
-  timeout      = 10
+  timeout      = 100
   memory_size = 128
 }
