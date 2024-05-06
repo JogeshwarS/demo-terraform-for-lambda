@@ -1,0 +1,14 @@
+name: '[dev] Deploy Ruler island'
+
+on: [workflow_dispatch]
+
+jobs:
+  dev_deploy:
+    uses: ./.github/workflows/_deploy.yaml
+    with:
+      environment: stage
+      # build: stage
+      aws_region: 'us-east-1'
+      aws_s3_bucket: 'stage.gaming.frontend.5irechain'
+      distribution_id: 'E2O98N4MJS0ET2'
+      role-to-assume: 'arn:aws:iam::905418216374:role/StageGithubActionsRole5irechain'

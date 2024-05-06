@@ -1,0 +1,95 @@
+# Deploy Ruler web homepage on S3 and reset Cloudfront cache
+name: 'Deploy Ruler island'
+env:
+  # Parameters for building app:
+  SOURCE_DIR             : 'build/'
+  NODE_VERSION           : '18.x'
+  PATH_DISTRIBUTION      : '/*'
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: 'environment name'
+        required: true
+        type: string
+        # options:
+        #   - development
+        #   - uat
+        #   - production
+      # build:
+      #   description: 'build type to excecute with the command `npm run build:<build>`'
+      #   required: true
+      #   type: string
+      #   # options:
+      #   #   - dev
+      #   #   - uat
+      #   #   - prod
+      aws_region:
+        required: true
+        type: string
+      aws_s3_bucket:
+        required: true
+        type: string
+      distribution_id:
+        description: 'Cloudfront distribution'
+        required: true
+        type: string
+      role-to-assume:
+        required: true
+        type: string
+
+permissions:
+ id-token: write
+ contents: read # This is required for actions/checkout@v3
+
+jobs:
+  deploy_ruler_island:
+    runs-on: ubuntu-latest
+    permissions: write-all
+
+    steps:
+#############          
+# Setup
+#############
+      - name: configureawscredentials
+        uses: aws-actions/configure-aws-credentials@e1e17a757e536f70e52b5a12b2e8d1d1c60e04ef
+        with:
+          role-to-assume: ${{ inputs.role-to-assume }}
+          role-session-name: ruler-session-${{ inputs.environment }}
+          aws-region: ${{ inputs.aws_region }}
+
+      - name: Git clone repo
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+      - uses: deptno/action-aws-ssm-to-dotenv@v1.3.1
+        env:
+          AWS_DEFAULT_REGION: us-west-2 # required
+        with:
+          ssm-path: /stage/frontend/gaming/environment_variables # required
+          format: dotenv
+          output: .env.production
+          decryption: true
+        run: cat .env.production
+      
+      - name: 'Another example step'
+        run: cat .env.production
+
+      # - name: Set Node version
+      #   uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
+      #   with:
+      #     node-version: ${{ env.NODE_VERSION }}
+      
+      # - name: Install dependencies
+      #   run: npm install
+
+      # - name: Build
+      #   run: npm run build
+
+##################### 
+# deploy to AWS
+#####################
+      # - name: Copy build to S3 bucket 
+      #   run: aws s3 sync ${{ env.SOURCE_DIR }} s3://${{ inputs.aws_s3_bucket }}
+        
+      # - name: Invalidate CloudFront cache
+      #   run: aws cloudfront create-invalidation --distribution-id ${{ inputs.distribution_id }} --paths "${{ env.PATH_DISTRIBUTION }}"
