@@ -65,7 +65,7 @@ jobs:
         env:
           AWS_DEFAULT_REGION: us-west-2 # required
         with:
-          ssm-path: /stage/frontend/gaming/environment_variables # required
+          ssm-path: /stage/frontend/gaming # required
           format: dotenv
           output: .env.production
           decryption: true
