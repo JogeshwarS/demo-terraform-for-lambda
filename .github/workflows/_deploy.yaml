@@ -45,7 +45,7 @@ permissions:
 jobs:
   deploy_ruler_island:
     runs-on: ubuntu-latest
-    permissions: write-all
+    # permissions: write-all
 
     steps:
 #############          
