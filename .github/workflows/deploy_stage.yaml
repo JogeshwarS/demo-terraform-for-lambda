@@ -1,5 +1,4 @@
 name: '[dev] Deploy Ruler island'
-
 on: [workflow_dispatch]
 
 jobs:
