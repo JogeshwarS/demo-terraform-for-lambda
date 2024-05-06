@@ -1,5 +1,12 @@
 name: '[dev] Deploy Ruler island'
-on: [workflow_dispatch]
+on:
+  push:
+    branches: 
+      - master
+  pull_request:
+    branches:
+      - master
+
 
 jobs:
   dev_deploy:
